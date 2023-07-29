@@ -1,0 +1,6 @@
+fastAPI
+uvicorn[standard]
+sqlalchemy
+passlib
+bcrypt
+python-jose
