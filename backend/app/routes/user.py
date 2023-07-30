@@ -5,15 +5,11 @@ from ..hashing import Hash
 from sqlalchemy.orm import Session
 
 route = APIRouter(
-    prefix="/user",
     tags={"User"}
 )
 
-@route.get("/signin")
-def GetUser(current_user:schemas.User = Depends(oauth.get_current_user)):
-    return {"message":"Hello to the user API"}
-
-@route.post("/", response_model = schemas.ShowUser, status_code = status.HTTP_201_CREATED)
+# API for creating new user 
+@route.post("/user", response_model = schemas.ShowUser, status_code = status.HTTP_201_CREATED)
 def NewUser(request: schemas.User, db: Session = Depends(database.getData)):
     # to check if username or email already exist in the data
     user_username = db.query(models.User).filter(models.User.name==request.name).first()
@@ -32,3 +28,11 @@ def NewUser(request: schemas.User, db: Session = Depends(database.getData)):
     db.commit()
     db.refresh(new_user)
     return new_user
+
+# API for returning current user's details
+@route.post("/getuser", response_model=schemas.ShowUser, status_code = status.HTTP_201_CREATED)
+def getUser(request: schemas.UserId ,db: Session= Depends(database.getData), current_user:schemas.User = Depends(oauth.get_current_user)):
+    user = db.query(models.User).filter(models.User.id==request.id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User Details not found")
+    return user

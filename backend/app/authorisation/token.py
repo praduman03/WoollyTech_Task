@@ -6,10 +6,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# importing Algorithm and secret key from the env file
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
+# function to create a jwt token with the given data and algorithm with a expiration time and updating it once it gets expired
 def create_token(data:dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -17,6 +19,7 @@ def create_token(data:dict):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+# verifying token and the data present in it if failed then returning an error
 def verify_token(token:str, credentials_exception):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])

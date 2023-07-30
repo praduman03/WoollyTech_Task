@@ -9,10 +9,11 @@ route = APIRouter(
     tags=["Authentication"]
 )
 
-# Hash = hashing.Hash
-
+# API to authenticate users
 @route.post('/login', status_code = status.HTTP_201_CREATED)
 def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.getData)):
+
+    # returning invalid credentials after not getting email or password
     user = db.query(models.User).filter(models.User.email==request.username).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Invalid Credentials")
