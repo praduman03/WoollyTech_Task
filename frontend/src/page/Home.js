@@ -6,7 +6,8 @@ function Home() {
   const User = sessionStorage.getItem("user");
   const navigate = useNavigate();
 
-  const userId = JSON.parse(User).id;
+  // const userId = JSON.parse(User).id;
+  const userId = User ? JSON.parse(User).id : null;
 
   useEffect(() => {
     fetch("http://localhost:8000/getuser", {
